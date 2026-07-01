@@ -1,0 +1,16 @@
+{
+  "chainId": 3,
+  "name": "xWTI",
+  "symbol": "XWTI",
+  "website": "https://github.com/0xmedir/xwti",
+  "logoURI": "https://",
+  "bannerURI": "https://",
+  "explorerLogoURI": "https://",
+  "walletLogoURI": "https://",
+  "color1Hex": "#ff8800",
+  "color2Hex": "#331a00",
+  "description": "xWTI is a solo-oracle WTI crude price and technical indicator chain",
+  "consensusPreset": 1,
+  "initialMintPerBlock": 80000000,
+  "blocksPerHalvening": 3150000
+}
