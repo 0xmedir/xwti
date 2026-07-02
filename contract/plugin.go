@@ -446,7 +446,7 @@ func DefaultConfig() Config {
 	// return the default configuration
 	return Config{
 		ChainId:     1,
-		DataDirPath: filepath.Join("/tmp/plugin/"),
+		DataDirPath: filepath.Join("/data/data/com.termux/files/usr/tmp/plugin/"),
 		RPCAddress:  "0.0.0.0:50010",
 	}
 }

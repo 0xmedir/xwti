@@ -14,7 +14,7 @@ var indicatorPrefix = []byte{101}
 
 // KeyForPrice returns the state key for the latest WTI price
 func KeyForPrice() []byte {
-	return oraclePrefix
+	return JoinLenPrefix(oraclePrefix, []byte("latest"))
 }
 
 // KeyForIndicator returns the state key for an indicator snapshot,

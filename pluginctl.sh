@@ -1,12 +1,12 @@
-#!/bin/bash
+#!/data/data/com.termux/files/usr/bin/bash
 # pluginctl.sh - Control script for managing the go-plugin binary
 # Usage: ./pluginctl.sh {start|stop|status|restart}
 # Configuration variables for paths and files
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 BINARY_PATH="$SCRIPT_DIR/go-plugin"
-PID_FILE="/tmp/plugin/go-plugin.pid"
-LOG_FILE="/tmp/plugin/go-plugin.log"
-PLUGIN_DIR="/tmp/plugin"
+PID_FILE="/data/data/com.termux/files/usr/tmp/plugin/go-plugin.pid"
+LOG_FILE="/data/data/com.termux/files/usr/tmp/plugin/go-plugin.log"
+PLUGIN_DIR="/data/data/com.termux/files/usr/tmp/plugin"
 # Timeout in seconds for graceful shutdown
 STOP_TIMEOUT=10
 
