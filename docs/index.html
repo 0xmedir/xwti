@@ -4,22 +4,16 @@
   <!--
   ═══════════════════════════════════════════════════════════════
   xWTI – Sovereign Oracle for WTI Crude Oil
-  Single‑file, zero‑build. Deploy as index.html.
+  Single‑file, zero‑build, real data from Twelve Data.
   ═══════════════════════════════════════════════════════════════
-  Design inherits from 0xmedir.github.io:
-    – Warm palette (#F7F6F3, #0B0E14, #C9A84C)
-    – Inter + JetBrains Mono
-    – Generous whitespace, restrained motion
-  Integration with Canopy Network:
-    – xWTI is a Canopy appchain (Go plugin)
-    – Data is simulated but matches real RPC structure
-    – Replace simulation with fetch() to your Canopy node
+  Design: sibling to 0xmedir.github.io – warm, clean, premium.
+  UX: live price ticker, network dashboard, developer hub.
   ═══════════════════════════════════════════════════════════════
   -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>xWTI · Sovereign Oracle on Canopy</title>
-  <meta name="description" content="Sovereign oracle appchain for WTI crude oil pricing, built with the Canopy SDK." />
+  <title>xWTI · Real‑Time WTI Oracle</title>
+  <meta name="description" content="Live WTI crude oil prices from a sovereign oracle on Canopy Network." />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%230B0E14'/><text x='32' y='41' font-family='monospace' font-size='28' fill='%23C9A84C' text-anchor='middle'>x</text></svg>" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -91,9 +85,9 @@
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
       transition: background 0.2s, color 0.2s;
+      min-height: 100vh;
     }
     a { color: inherit; text-decoration: none; }
-    ul { list-style: none; padding: 0; }
     .wrap {
       max-width: var(--max-width);
       margin: 0 auto;
@@ -118,7 +112,7 @@
     .skip-link:focus { left: 0; }
 
     /* ═══════════════════════════════════════════════════
-       HEADER (sticky, minimal)
+       HEADER
        ═══════════════════════════════════════════════════ */
     .site-header {
       position: sticky;
@@ -186,7 +180,20 @@
        ═══════════════════════════════════════════════════ */
     .hero {
       padding-block: var(--space-10) var(--space-8);
+      position: relative;
     }
+    .hero::after {
+      content: '';
+      position: absolute;
+      top: -20%;
+      right: -20%;
+      width: 60%;
+      height: 80%;
+      background: radial-gradient(ellipse, rgba(201,168,76,0.05), transparent 70%);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .hero .wrap { position: relative; z-index: 1; }
     .eyebrow {
       display: inline-block;
       font-family: var(--font-mono);
@@ -222,22 +229,60 @@
     }
     .hero .live-price .price {
       font-family: var(--font-mono);
-      font-size: 2.2rem;
+      font-size: 2.4rem;
       font-weight: 500;
       color: var(--color-accent);
+      transition: color 0.2s;
     }
     .hero .live-price .label {
-      font-size: 0.8rem;
+      font-size: 0.85rem;
       color: var(--color-text-muted);
     }
     .hero .live-price .change {
       font-size: 1rem;
       font-weight: 500;
+      padding: 0.1rem 0.8rem;
+      border-radius: 999px;
+      background: rgba(76,175,80,0.12);
       color: #4CAF50;
+      transition: all 0.3s;
     }
-    .hero .live-price .change.negative { color: #F44336; }
+    .hero .live-price .change.negative {
+      background: rgba(244,67,54,0.12);
+      color: #F44336;
+    }
+    .hero .live-price .source {
+      font-size: 0.7rem;
+      color: var(--color-text-muted);
+      margin-left: auto;
+      opacity: 0.6;
+    }
+    .hero .data-status {
+      margin-top: var(--space-3);
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      color: var(--color-text-muted);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .hero .data-status .live-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #4CAF50;
+      animation: pulse-dot 1.8s infinite;
+    }
+    @keyframes pulse-dot {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.3; transform: scale(0.8); }
+    }
     .hero .cta {
       margin-top: var(--space-7);
+      display: flex;
+      gap: var(--space-4);
+      flex-wrap: wrap;
     }
     .btn {
       display: inline-flex;
@@ -270,7 +315,7 @@
     }
 
     /* ═══════════════════════════════════════════════════
-       HOW IT WORKS (Canopy integration)
+       HOW IT WORKS
        ═══════════════════════════════════════════════════ */
     .how-it-works {
       padding-block: var(--space-8);
@@ -294,18 +339,20 @@
       border-radius: var(--radius);
       padding: var(--space-5);
       transition: border-color 0.2s, transform 0.2s;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.02);
     }
-    .step:hover { border-color: var(--color-accent); transform: translateY(-3px); }
+    .step:hover {
+      border-color: var(--color-accent);
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.04);
+    }
     .step .num {
       font-family: var(--font-mono);
       font-size: 0.8rem;
       color: var(--color-accent);
       margin-bottom: var(--space-2);
     }
-    .step h3 {
-      font-size: 1.1rem;
-      margin-bottom: var(--space-2);
-    }
+    .step h3 { font-size: 1.1rem; margin-bottom: var(--space-2); }
     .step p {
       color: var(--color-text-muted);
       font-size: 0.95rem;
@@ -319,7 +366,7 @@
     }
 
     /* ═══════════════════════════════════════════════════
-       DASHBOARD (live network)
+       DASHBOARD
        ═══════════════════════════════════════════════════ */
     .dashboard {
       padding-block: var(--space-8);
@@ -346,12 +393,22 @@
       border-radius: var(--radius);
       padding: var(--space-4) var(--space-3);
       text-align: center;
+      transition: all 0.2s;
+    }
+    .dash-item:hover {
+      border-color: var(--color-accent);
+      transform: translateY(-2px);
     }
     .dash-item .value {
       font-family: var(--font-mono);
       font-size: 1.6rem;
       font-weight: 500;
       color: var(--color-accent);
+      transition: color 0.2s;
+    }
+    .dash-item .value.glow {
+      color: var(--color-accent-strong);
+      text-shadow: 0 0 12px rgba(201,168,76,0.3);
     }
     .dash-item .label {
       font-size: 0.7rem;
@@ -362,7 +419,7 @@
     }
 
     /* ═══════════════════════════════════════════════════
-       DEVELOPER SECTION
+       DEVELOPERS
        ═══════════════════════════════════════════════════ */
     .developers {
       padding-block: var(--space-8);
@@ -500,25 +557,32 @@
   <main id="main">
 
     <!-- ════════════════════════════════════════
-         HERO
+         HERO – live price
          ════════════════════════════════════════ -->
-    <section class="hero wrap">
-      <span class="eyebrow">Sovereign Appchain on Canopy</span>
-      <h1>xWTI</h1>
-      <p class="tagline">A sovereign oracle for WTI crude oil — built on Canopy Network. Transparent, reliable, and yours.</p>
-      <div class="live-price">
-        <span class="price" id="priceDisplay">73.42</span>
-        <span class="label">USD · WTI</span>
-        <span class="change" id="changeDisplay">+0.42%</span>
-      </div>
-      <div class="cta">
-        <a href="#how" class="btn btn-primary">How it works</a>
-        <a href="#dashboard" class="btn">Live network</a>
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="wrap">
+        <span class="eyebrow">Sovereign Appchain on Canopy</span>
+        <h1 id="hero-title">xWTI</h1>
+        <p class="tagline">A sovereign oracle for WTI crude oil — built on Canopy Network. Transparent, reliable, and yours.</p>
+        <div class="live-price">
+          <span class="price" id="priceDisplay">—</span>
+          <span class="label">USD · WTI</span>
+          <span class="change" id="changeDisplay">—</span>
+          <span class="source" id="dataSource">⌛ loading…</span>
+        </div>
+        <div class="data-status">
+          <span class="live-dot"></span> Live data from <span id="apiName">Twelve Data</span>
+          <span style="margin-left: auto; opacity:0.5;" id="lastUpdate">—</span>
+        </div>
+        <div class="cta">
+          <a href="#how" class="btn btn-primary">How it works</a>
+          <a href="#dashboard" class="btn">Live network</a>
+        </div>
       </div>
     </section>
 
     <!-- ════════════════════════════════════════
-         HOW IT WORKS (Canopy integration)
+         HOW IT WORKS – Canopy integration
          ════════════════════════════════════════ -->
     <section id="how" class="how-it-works wrap">
       <h2>How it works</h2>
@@ -538,25 +602,25 @@
         </div>
         <div class="step reveal">
           <div class="num">03</div>
-          <h3>Live data</h3>
-          <p>This website simulates the RPC feed. In production, you’d point it to your own Canopy node’s RPC endpoint.</p>
+          <h3>Real‑time feed</h3>
+          <p>This site fetches live WTI prices from Twelve Data. In production, you point it to your Canopy node’s RPC.</p>
         </div>
       </div>
       <div style="margin-top: var(--space-6); padding: var(--space-4); background: var(--color-bg-elevated); border-radius: var(--radius); border: 1px solid var(--color-border); font-size: 0.9rem; color: var(--color-text-muted);">
-        <strong style="color: var(--color-text);">⚡ Want to run your own oracle?</strong> 
+        <strong style="color: var(--color-text);">⚡ Want to run your own oracle?</strong>
         <a href="https://github.com/0xmedir/xwti" style="color: var(--color-accent); text-decoration: underline;">Fork the repo</a> and follow the <a href="https://github.com/0xmedir/xwti/blob/master/TUTORIAL.md" style="color: var(--color-accent); text-decoration: underline;">tutorial</a>.
       </div>
     </section>
 
     <!-- ════════════════════════════════════════
-         DASHBOARD (live network)
+         DASHBOARD – live network metrics
          ════════════════════════════════════════ -->
     <section id="dashboard" class="dashboard wrap">
       <h2>Live Network</h2>
-      <p class="sub">Real‑time metrics from the xWTI appchain (simulated).</p>
+      <p class="sub">Real‑time metrics from the xWTI appchain (simulated where no RPC available).</p>
       <div class="dash-grid" id="dashGrid">
         <div class="dash-item reveal">
-          <div class="value" id="dashPrice">73.42</div>
+          <div class="value" id="dashPrice">—</div>
           <div class="label">Price (USD)</div>
         </div>
         <div class="dash-item reveal">
@@ -583,7 +647,7 @@
     </section>
 
     <!-- ════════════════════════════════════════
-         DEVELOPERS
+         DEVELOPERS – quick start
          ════════════════════════════════════════ -->
     <section id="developers" class="developers wrap">
       <h2>For Developers</h2>
@@ -654,42 +718,94 @@
         reveals.forEach(el => el.classList.add('visible'));
       }
 
-      // ── Simulated live data ──
-      let price = 73.42;
+      // ── Real data: Twelve Data API (your key) ──
+      const TWELVE_DATA_KEY = 'f4c6db618d5d430d8e00017c5d6d5e94';
+      const SYMBOL = 'WTI';
+
       const priceEl = document.getElementById('priceDisplay');
       const changeEl = document.getElementById('changeDisplay');
       const dashPrice = document.getElementById('dashPrice');
+      const dataSourceEl = document.getElementById('dataSource');
+      const apiNameEl = document.getElementById('apiName');
+      const lastUpdateEl = document.getElementById('lastUpdate');
+
+      let previousPrice = null;
+      let currentPrice = null;
+
+      function fetchPrice() {
+        const url = `https://api.twelvedata.com/price?symbol=${SYMBOL}&apikey=${TWELVE_DATA_KEY}`;
+
+        dataSourceEl.textContent = 'fetching…';
+        dataSourceEl.style.opacity = '0.6';
+
+        fetch(url)
+          .then(res => {
+            if (!res.ok) throw new Error('HTTP error ' + res.status);
+            return res.json();
+          })
+          .then(data => {
+            if (data.price) {
+              const newPrice = parseFloat(data.price);
+              if (!isNaN(newPrice) && newPrice > 0) {
+                currentPrice = newPrice;
+                priceEl.textContent = currentPrice.toFixed(2);
+                dashPrice.textContent = currentPrice.toFixed(2);
+
+                // Calculate change
+                if (previousPrice !== null) {
+                  const pct = ((currentPrice - previousPrice) / previousPrice) * 100;
+                  const isPositive = pct >= 0;
+                  changeEl.textContent = (isPositive ? '+' : '') + pct.toFixed(2) + '%';
+                  changeEl.className = 'change' + (isPositive ? '' : ' negative');
+                } else {
+                  changeEl.textContent = '—';
+                }
+                previousPrice = currentPrice;
+
+                dataSourceEl.textContent = '✓ live';
+                dataSourceEl.style.opacity = '1';
+                apiNameEl.textContent = 'Twelve Data';
+                lastUpdateEl.textContent = new Date().toLocaleTimeString();
+
+                // Glow effect on dash price
+                dashPrice.classList.add('glow');
+                setTimeout(() => dashPrice.classList.remove('glow'), 300);
+              }
+            }
+          })
+          .catch(err => {
+            console.warn('Price fetch failed:', err);
+            dataSourceEl.textContent = '⚠️ error — retrying…';
+            dataSourceEl.style.opacity = '0.5';
+            // Keep last known price if available
+            if (currentPrice !== null) {
+              priceEl.textContent = currentPrice.toFixed(2);
+              dashPrice.textContent = currentPrice.toFixed(2);
+            }
+          });
+      }
+
+      // Fetch immediately, then every 30 seconds
+      fetchPrice();
+      setInterval(fetchPrice, 30000);
+
+      // ── Simulated dashboard metrics (block, txs, validators) ──
+      // In production, these would come from your Canopy RPC
       const dashBlock = document.getElementById('dashBlock');
       const dashTxs = document.getElementById('dashTxs');
       const dashValidators = document.getElementById('dashValidators');
 
-      function updateData() {
-        // Price simulation
-        const change = (Math.random() - 0.5) * 0.6;
-        price = Math.max(60, Math.min(90, price + change));
-        const pct = (change / (price - change)) * 100;
-        const isPositive = pct >= 0;
-        priceEl.textContent = price.toFixed(2);
-        dashPrice.textContent = price.toFixed(2);
-        changeEl.textContent = (isPositive ? '+' : '') + pct.toFixed(2) + '%';
-        changeEl.className = 'change' + (isPositive ? '' : ' negative');
-
-        // Block height (simulated)
+      function updateSimulatedMetrics() {
         const block = parseInt(dashBlock.textContent.replace(/,/g, '')) + Math.floor(Math.random() * 5) + 1;
         dashBlock.textContent = block.toLocaleString();
 
-        // Transactions
         const txs = parseInt(dashTxs.textContent.replace(/,/g, '')) + Math.floor(Math.random() * 10);
         dashTxs.textContent = txs.toLocaleString();
 
-        // Validators (stable)
         const val = 12 + Math.floor(Math.random() * 3);
         dashValidators.textContent = val;
       }
-
-      setInterval(updateData, 4000);
-      // Initial update after 1s
-      setTimeout(updateData, 1000);
+      setInterval(updateSimulatedMetrics, 8000);
 
       // ── Copy code snippet ──
       const copyBtn = document.getElementById('copyBtn');
