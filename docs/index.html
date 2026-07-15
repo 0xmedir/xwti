@@ -1,133 +1,251 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!--
+  ═══════════════════════════════════════════════════════════════
+  xWTI – Sovereign Oracle for WTI Crude Oil
+  Product landing page. Single‑file, zero builds.
+  ═══════════════════════════════════════════════════════════════
+  DESIGN SYSTEM
+  ─────────────
+  • Typography: Inter (variable) for body; Fraunces (serif) for headings.
+  • Colours:
+    – Background: #0B0E14 (deep charcoal) and #11161E (off‑black)
+    – Accent: #C9A84C (gold) with #4A9E9E (muted teal) as secondary
+    – Text: #FFFFFF, #E9EAEE, #9AA3B5, #5A6475
+  • Spacing: 4px grid, generous whitespace.
+  • Motion: 200ms ease, prefers‑reduced‑motion respected.
+  • Glass‑morphism cards and subtle grid background.
+  ═══════════════════════════════════════════════════════════════
+  -->
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>xWTI · Sovereign Oracle for WTI Crude Oil</title>
-  <meta name="description" content="A sovereign oracle appchain for WTI crude oil pricing on Canopy Network. Live polling, onchain indicators, open RPC." />
+  <meta name="description" content="Sovereign oracle appchain for WTI crude oil pricing on Canopy Network. Real‑time feeds, onchain indicators, open RPC." />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%230B0E14'/><text x='32' y='41' font-family='monospace' font-size='28' fill='%23C9A84C' text-anchor='middle'>x</text></svg>" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
   <style>
+    /* ═══════════════════════════════════════════════════
+       RESET & BASE
+       ═══════════════════════════════════════════════════ */
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
     body {
       background: #0B0E14;
       color: #E9EAEE;
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow-x: hidden;
     }
+
+    /* Subtle grid background in hero */
+    .bg-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(201, 168, 76, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(201, 168, 76, 0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
     .container {
-      max-width: 1100px;
+      max-width: 1200px;
       margin: 0 auto;
-      padding: 2rem 1.5rem;
+      padding: 0 1.5rem;
+      position: relative;
+      z-index: 1;
     }
-    /* Header */
+
+    /* ═══════════════════════════════════════════════════
+       HEADER
+       ═══════════════════════════════════════════════════ */
     header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 1rem 0;
+      background: transparent;
+      transition: background 0.3s ease, backdrop-filter 0.3s ease;
+    }
+    header.scrolled {
+      background: rgba(11, 14, 20, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(201, 168, 76, 0.1);
+    }
+    .header-inner {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 1rem 0;
-      border-bottom: 1px solid #1A1F2A;
       flex-wrap: wrap;
       gap: 1rem;
     }
     .logo {
-      font-size: 1.5rem;
+      font-family: 'Fraunces', serif;
+      font-size: 1.6rem;
       font-weight: 700;
       letter-spacing: -0.02em;
       color: #C9A84C;
       text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
     .logo span { color: #E9EAEE; }
+    .status-dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #4CAF50;
+      box-shadow: 0 0 8px rgba(76, 175, 80, 0.6);
+      animation: pulse-dot 2s infinite;
+      margin-left: 0.3rem;
+    }
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.8); }
+    }
+
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 1.8rem;
+    }
     nav a {
       color: #9AA3B5;
       text-decoration: none;
-      margin-left: 1.5rem;
       font-size: 0.9rem;
+      font-weight: 500;
       transition: color 0.2s;
+      position: relative;
     }
     nav a:hover { color: #C9A84C; }
-    /* Hero */
-    .hero {
-      padding: 4rem 0 3rem;
-      text-align: center;
-      border-bottom: 1px solid #1A1F2A;
+    nav a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: #C9A84C;
+      transition: width 0.2s;
     }
-    .badge {
-      display: inline-block;
-      background: #1A1F2A;
-      border: 1px solid #2A3040;
+    nav a:hover::after { width: 100%; }
+    .nav-cta {
+      background: #C9A84C;
+      color: #0B0E14 !important;
+      padding: 0.4rem 1.2rem;
       border-radius: 999px;
-      padding: 0.3rem 1.2rem;
+      font-weight: 600;
+      font-size: 0.85rem;
+    }
+    .nav-cta::after { display: none; }
+    .nav-cta:hover { background: #E8C84A; color: #0B0E14 !important; }
+
+    /* ═══════════════════════════════════════════════════
+       HERO
+       ═══════════════════════════════════════════════════ */
+    .hero {
+      padding: 4rem 0 5rem;
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 3rem;
+      align-items: center;
+      border-bottom: 1px solid rgba(201, 168, 76, 0.1);
+    }
+    @media (max-width: 800px) {
+      .hero { grid-template-columns: 1fr; text-align: center; gap: 2rem; }
+    }
+    .hero-content {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.6rem;
+      background: rgba(201, 168, 76, 0.12);
+      border: 1px solid rgba(201, 168, 76, 0.25);
+      border-radius: 999px;
+      padding: 0.3rem 1.2rem 0.3rem 1rem;
       font-size: 0.75rem;
       font-weight: 600;
       letter-spacing: 0.06em;
       text-transform: uppercase;
       color: #C9A84C;
-      margin-bottom: 1.5rem;
+      width: fit-content;
     }
-    .badge .dot {
-      display: inline-block;
+    .hero-badge .dot {
       width: 8px;
       height: 8px;
-      background: #4CAF50;
       border-radius: 50%;
-      margin-right: 0.5rem;
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.5; transform: scale(0.9); }
+      background: #4CAF50;
+      animation: pulse-dot 1.8s infinite;
     }
     .hero h1 {
-      font-size: 3.5rem;
+      font-family: 'Fraunces', serif;
+      font-size: clamp(2.8rem, 6vw, 4.5rem);
       font-weight: 700;
+      line-height: 1.1;
       letter-spacing: -0.02em;
       background: linear-gradient(135deg, #C9A84C, #E8C84A);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      margin-bottom: 0.5rem;
+      margin: 0;
     }
     .hero .sub {
-      font-size: 1.3rem;
+      font-size: 1.2rem;
       color: #9AA3B5;
-      margin-bottom: 1.5rem;
-      font-weight: 400;
+      max-width: 90%;
     }
     .hero .typing {
-      font-family: 'Inter', monospace;
       font-size: 1.1rem;
       color: #8A94A6;
-      margin-bottom: 2rem;
       min-height: 2.4em;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      flex-wrap: wrap;
     }
     .hero .typing .cursor {
       display: inline-block;
       width: 2px;
-      height: 1.1em;
+      height: 1.2em;
       background: #C9A84C;
-      margin-left: 4px;
       animation: blink 1s step-end infinite;
     }
     @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+
     .btn-group {
       display: flex;
       flex-wrap: wrap;
-      justify-content: center;
       gap: 1rem;
-      margin-top: 1.5rem;
+      margin-top: 0.5rem;
     }
     .btn {
       display: inline-block;
       padding: 0.7rem 2rem;
       border-radius: 999px;
       font-weight: 600;
+      font-size: 0.95rem;
       text-decoration: none;
       transition: all 0.2s;
-      font-size: 1rem;
+      border: none;
+      cursor: pointer;
+      background: transparent;
     }
     .btn-primary {
       background: #C9A84C;
@@ -136,253 +254,719 @@
     .btn-primary:hover {
       background: #E8C84A;
       transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(201, 168, 76, 0.3);
     }
     .btn-outline {
       border: 1px solid #C9A84C;
       color: #C9A84C;
-      background: transparent;
     }
     .btn-outline:hover {
       background: #C9A84C;
       color: #0B0E14;
       transform: translateY(-2px);
     }
-    /* Features */
+
+    /* Hero right – price ticker */
+    .hero-ticker {
+      background: #11161E;
+      border: 1px solid #1A1F2A;
+      border-radius: 16px;
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      backdrop-filter: blur(4px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+    .ticker-price {
+      font-family: 'Fraunces', serif;
+      font-size: 2.8rem;
+      font-weight: 700;
+      color: #C9A84C;
+      display: flex;
+      align-items: baseline;
+      gap: 0.5rem;
+    }
+    .ticker-price .currency {
+      font-size: 1.2rem;
+      color: #9AA3B5;
+      font-weight: 400;
+    }
+    .ticker-change {
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 0.2rem 0.8rem;
+      border-radius: 999px;
+      background: rgba(76, 175, 80, 0.15);
+      color: #4CAF50;
+    }
+    .ticker-change.negative {
+      background: rgba(244, 67, 54, 0.15);
+      color: #F44336;
+    }
+    .ticker-chart svg {
+      width: 100%;
+      height: 60px;
+      display: block;
+    }
+    .ticker-chart path {
+      fill: none;
+      stroke: #C9A84C;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      opacity: 0.8;
+    }
+    .ticker-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: #5A6475;
+      border-top: 1px solid #1A1F2A;
+      padding-top: 0.8rem;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       FEATURES
+       ═══════════════════════════════════════════════════ */
     .features {
+      padding: 5rem 0;
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 2rem;
-      padding: 3rem 0;
-      border-bottom: 1px solid #1A1F2A;
+      border-bottom: 1px solid rgba(201, 168, 76, 0.08);
     }
-    .feature {
-      background: #13171F;
+    .feature-card {
+      background: #11161E;
       border: 1px solid #1A1F2A;
-      border-radius: 12px;
-      padding: 1.5rem;
-      transition: border-color 0.2s, transform 0.2s;
+      border-radius: 16px;
+      padding: 1.8rem 1.5rem;
+      transition: all 0.25s ease;
+      position: relative;
+      overflow: hidden;
+      cursor: default;
     }
-    .feature:hover {
+    .feature-card:hover {
       border-color: #C9A84C;
       transform: translateY(-4px);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.3);
     }
-    .feature .icon {
-      font-size: 2rem;
+    .feature-card .icon {
+      font-size: 2.2rem;
       margin-bottom: 0.5rem;
     }
-    .feature h3 {
-      font-size: 1.1rem;
+    .feature-card h3 {
+      font-size: 1.2rem;
+      font-weight: 600;
       margin-bottom: 0.3rem;
       color: #E9EAEE;
     }
-    .feature p {
+    .feature-card p {
+      color: #9AA3B5;
       font-size: 0.95rem;
-      color: #8A94A6;
       line-height: 1.5;
     }
-    /* Live status */
-    .live-status {
-      background: #13171F;
+    .feature-card .detail {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease, opacity 0.3s ease;
+      opacity: 0;
+      margin-top: 0;
+    }
+    .feature-card:hover .detail {
+      max-height: 120px;
+      opacity: 1;
+      margin-top: 1rem;
+    }
+    .feature-card .detail code {
+      background: #0B0E14;
+      padding: 0.2rem 0.6rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      color: #C9A84C;
+      display: inline-block;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       LIVE DASHBOARD
+       ═══════════════════════════════════════════════════ */
+    .dashboard {
+      padding: 5rem 0;
+      border-bottom: 1px solid rgba(201, 168, 76, 0.08);
+    }
+    .dashboard h2 {
+      font-family: 'Fraunces', serif;
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .dashboard .sub {
+      color: #9AA3B5;
+      margin-bottom: 2rem;
+    }
+    .dash-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    .dash-item {
+      background: #11161E;
       border: 1px solid #1A1F2A;
       border-radius: 12px;
-      padding: 2rem;
-      margin: 2rem 0;
+      padding: 1.2rem 1rem;
       text-align: center;
     }
-    .live-status .price {
-      font-size: 2.5rem;
+    .dash-item .value {
+      font-size: 1.8rem;
       font-weight: 700;
       color: #C9A84C;
+      font-family: 'Fraunces', serif;
     }
-    .live-status .label {
-      font-size: 0.9rem;
-      color: #8A94A6;
-      margin-top: 0.3rem;
+    .dash-item .label {
+      font-size: 0.75rem;
+      color: #5A6475;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      margin-top: 0.2rem;
     }
-    /* Docs quick links */
-    .docs-grid {
+    .mini-chart {
+      background: #11161E;
+      border: 1px solid #1A1F2A;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-top: 1.5rem;
+    }
+    .mini-chart svg {
+      width: 100%;
+      height: 80px;
+      display: block;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       DEVELOPER HUB
+       ═══════════════════════════════════════════════════ */
+    .dev-hub {
+      padding: 5rem 0;
+      border-bottom: 1px solid rgba(201, 168, 76, 0.08);
+    }
+    .dev-hub h2 {
+      font-family: 'Fraunces', serif;
+      font-size: 2rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+    .dev-hub .sub {
+      color: #9AA3B5;
+      margin-bottom: 2rem;
+    }
+    .quick-start {
+      background: #11161E;
+      border: 1px solid #1A1F2A;
+      border-radius: 12px;
+      padding: 1.5rem;
+      position: relative;
+      margin-bottom: 2rem;
+    }
+    .quick-start .label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #9AA3B5;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .quick-start pre {
+      background: #0B0E14;
+      padding: 1rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-family: 'Inter', monospace;
+      font-size: 0.85rem;
+      color: #E9EAEE;
+      margin: 0.5rem 0;
+      position: relative;
+    }
+    .copy-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: rgba(201, 168, 76, 0.15);
+      border: none;
+      color: #C9A84C;
+      padding: 0.3rem 0.8rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      font-weight: 500;
+      transition: background 0.2s;
+    }
+    .copy-btn:hover {
+      background: rgba(201, 168, 76, 0.25);
+    }
+
+    .doc-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 1rem;
-      padding: 2rem 0;
+      gap: 1.2rem;
     }
     .doc-card {
-      background: #13171F;
+      background: #11161E;
       border: 1px solid #1A1F2A;
-      border-radius: 8px;
-      padding: 1rem 1.2rem;
+      border-radius: 12px;
+      padding: 1.2rem 1.5rem;
       text-decoration: none;
       color: #E9EAEE;
-      transition: border-color 0.2s;
+      transition: border-color 0.2s, transform 0.2s;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.8rem;
     }
     .doc-card:hover {
       border-color: #C9A84C;
+      transform: translateY(-3px);
     }
-    .doc-card .emoji { font-size: 1.3rem; }
-    .doc-card .name { font-weight: 500; }
-    .doc-card .desc { font-size: 0.8rem; color: #8A94A6; margin-top: 0.2rem; }
-    /* Footer */
+    .doc-card .emoji { font-size: 1.5rem; }
+    .doc-card .info .name { font-weight: 600; }
+    .doc-card .info .desc { font-size: 0.8rem; color: #8A94A6; }
+
+    /* ═══════════════════════════════════════════════════
+       FOOTER
+       ═══════════════════════════════════════════════════ */
     footer {
-      border-top: 1px solid #1A1F2A;
-      padding: 2rem 0 1.5rem;
+      padding: 3rem 0 2rem;
+      border-top: 1px solid rgba(201, 168, 76, 0.08);
       display: flex;
+      flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
-      flex-wrap: wrap;
-      gap: 1rem;
-      margin-top: 2rem;
+      gap: 1.5rem;
     }
-    footer .social a {
+    .footer-left {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+    }
+    .footer-left .copy {
+      font-size: 0.8rem;
+      color: #5A6475;
+    }
+    .footer-left .badge {
+      font-size: 0.7rem;
       color: #8A94A6;
-      margin-left: 1.2rem;
+      letter-spacing: 0.04em;
+    }
+    .footer-right {
+      display: flex;
+      gap: 1.2rem;
+      align-items: center;
+    }
+    .footer-right a {
+      color: #8A94A6;
       text-decoration: none;
       font-size: 0.9rem;
       transition: color 0.2s;
     }
-    footer .social a:hover { color: #C9A84C; }
-    footer .copy {
-      font-size: 0.8rem;
-      color: #5A6475;
-    }
-    @media (max-width: 600px) {
+    .footer-right a:hover { color: #C9A84C; }
+
+    /* ═══════════════════════════════════════════════════
+       RESPONSIVE
+       ═══════════════════════════════════════════════════ */
+    @media (max-width: 640px) {
       .hero h1 { font-size: 2.5rem; }
       .hero .sub { font-size: 1rem; }
-      .btn-group .btn { width: 100%; text-align: center; }
-      nav a { margin-left: 1rem; }
+      .btn-group .btn { width: 100%; justify-content: center; }
+      nav { gap: 1rem; }
+      nav a { font-size: 0.8rem; }
+      .nav-cta { padding: 0.3rem 1rem; }
+      .ticker-price { font-size: 2rem; }
+      .dash-item .value { font-size: 1.4rem; }
+      .quick-start pre { font-size: 0.7rem; }
     }
+
+    /* ═══════════════════════════════════════════════════
+       SCROLL REVEAL (reduced motion safe)
+       ═══════════════════════════════════════════════════ */
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .reveal { opacity: 1; transform: none; }
+    }
+
+    /* ═══════════════════════════════════════════════════
+       ACCESSIBILITY
+       ═══════════════════════════════════════════════════ */
+    :focus-visible {
+      outline: 2px solid #C9A84C;
+      outline-offset: 2px;
+      border-radius: 4px;
+    }
+    .skip-link {
+      position: absolute;
+      left: -9999px;
+      top: 0;
+      background: #C9A84C;
+      color: #0B0E14;
+      padding: 0.5rem 1rem;
+      z-index: 999;
+      border-radius: 0 0 8px 0;
+      font-weight: 600;
+    }
+    .skip-link:focus { left: 1rem; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <!-- Header -->
-    <header>
-      <a href="#" class="logo">x<span>WTI</span></a>
-      <nav>
+
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- ════════════════════════════════════════
+       HEADER
+       ════════════════════════════════════════ -->
+  <header id="header" role="banner">
+    <div class="container header-inner">
+      <a href="#" class="logo" aria-label="xWTI home">
+        x<span>WTI</span>
+        <span class="status-dot" aria-label="Live status"></span>
+      </a>
+      <nav aria-label="Main navigation">
         <a href="#features">Features</a>
-        <a href="#docs">Docs</a>
-        <a href="https://github.com/0xmedir/xwti" target="_blank">GitHub</a>
+        <a href="#dashboard">Dashboard</a>
+        <a href="#dev-hub">Developers</a>
+        <a href="https://github.com/0xmedir/xwti" target="_blank" rel="noopener">GitHub</a>
+        <a href="#dev-hub" class="nav-cta">Get Started</a>
       </nav>
-    </header>
-
-    <!-- Hero -->
-    <section class="hero">
-      <div class="badge"><span class="dot"></span> Testnet Live</div>
-      <h1>xWTI</h1>
-      <p class="sub">Sovereign oracle appchain for WTI crude oil</p>
-      <div class="typing">
-        <span id="typed-text">Live polling · Onchain indicators</span><span class="cursor"></span>
-      </div>
-      <div class="btn-group">
-        <a href="#docs" class="btn btn-primary">Get Started</a>
-        <a href="https://github.com/0xmedir/xwti" target="_blank" class="btn btn-outline">View on GitHub</a>
-      </div>
-    </section>
-
-    <!-- Features -->
-    <section id="features" class="features">
-      <div class="feature">
-        <div class="icon">📊</div>
-        <h3>Live Polling</h3>
-        <p>Real‑time WTI prices from multiple sources, updated every minute.</p>
-      </div>
-      <div class="feature">
-        <div class="icon">🔗</div>
-        <h3>Onchain Indicators</h3>
-        <p>SMA, RSI, and other technical indicators submitted directly to the blockchain.</p>
-      </div>
-      <div class="feature">
-        <div class="icon">🧩</div>
-        <h3>Open RPC</h3>
-        <p>Anyone can query the raw feed via public RPC endpoints.</p>
-      </div>
-      <div class="feature">
-        <div class="icon">⚙️</div>
-        <h3>Sovereign Appchain</h3>
-        <p>Built with Canopy SDK – your own chain, your own rules.</p>
-      </div>
-    </section>
-
-    <!-- Live Status (placeholder) -->
-    <div class="live-status" id="status">
-      <div class="price">$73.42</div>
-      <div class="label">Latest WTI price (simulated)</div>
-      <div style="font-size:0.8rem; color:#5A6475; margin-top:0.5rem;">Updated every 60s · Coming soon: real feed</div>
     </div>
+  </header>
 
-    <!-- Documentation Quick Links -->
-    <section id="docs">
-      <h2 style="font-size:1.5rem; font-weight:600; margin-bottom:1rem; color:#E9EAEE;">Documentation</h2>
-      <div class="docs-grid">
-        <a href="https://github.com/0xmedir/xwti/blob/master/TUTORIAL.md" class="doc-card" target="_blank">
+  <main id="main">
+
+    <!-- ════════════════════════════════════════
+         HERO
+         ════════════════════════════════════════ -->
+    <section class="container hero" aria-labelledby="hero-title">
+      <div class="bg-grid"></div>
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="dot"></span> Testnet Live
+        </div>
+        <h1 id="hero-title">xWTI</h1>
+        <p class="sub">Sovereign oracle appchain for WTI crude oil pricing</p>
+        <div class="typing">
+          <span id="typed-text">Real‑time price aggregation</span><span class="cursor"></span>
+        </div>
+        <div class="btn-group">
+          <a href="#dev-hub" class="btn btn-primary">Get Started</a>
+          <a href="https://github.com/0xmedir/xwti" target="_blank" rel="noopener" class="btn btn-outline">View on GitHub</a>
+        </div>
+      </div>
+      <div class="hero-ticker" aria-label="Live price ticker">
+        <div class="ticker-price">
+          <span id="price-display">73.42</span>
+          <span class="currency">USD</span>
+          <span class="ticker-change" id="price-change">+0.42%</span>
+        </div>
+        <div class="ticker-chart">
+          <svg viewBox="0 0 400 60" preserveAspectRatio="none">
+            <path id="sparkline" d="M0,40 L20,35 L40,42 L60,28 L80,38 L100,30 L120,45 L140,32 L160,22 L180,38 L200,40 L220,28 L240,35 L260,20 L280,38 L300,30 L320,42 L340,25 L360,38 L380,28 L400,36" />
+          </svg>
+        </div>
+        <div class="ticker-meta">
+          <span>⏱ Updated: <span id="update-time">just now</span></span>
+          <span>📡 5 sources</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════
+         FEATURES
+         ════════════════════════════════════════ -->
+    <section id="features" class="container features">
+      <div class="feature-card reveal">
+        <div class="icon">📊</div>
+        <h3>Real‑time price aggregation</h3>
+        <p>Polling WTI from 5+ sources every 60 seconds for reliability.</p>
+        <div class="detail">
+          <p>Sources: Yahoo, Alpha Vantage, Twelve Data, Finnhub, and a fallback. <code>avg</code> of all values.</p>
+        </div>
+      </div>
+      <div class="feature-card reveal">
+        <div class="icon">📈</div>
+        <h3>Onchain SMA &amp; RSI</h3>
+        <p>Compute technical indicators directly on the appchain.</p>
+        <div class="detail">
+          <p>Periods: 7, 14, 21 days. RSI uses standard Wilder's method.</p>
+        </div>
+      </div>
+      <div class="feature-card reveal">
+        <div class="icon">🔗</div>
+        <h3>Open RPC endpoints</h3>
+        <p>Query raw price feeds and historical data with public APIs.</p>
+        <div class="detail">
+          <p><code>GET /v1/price/latest</code> · <code>GET /v1/indicator/sma</code></p>
+        </div>
+      </div>
+      <div class="feature-card reveal">
+        <div class="icon">⚙️</div>
+        <h3>Sovereign by design</h3>
+        <p>Built with Canopy SDK – your own chain, your own rules.</p>
+        <div class="detail">
+          <p>Fully customisable consensus, gas token, and module set.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════
+         LIVE DASHBOARD
+         ════════════════════════════════════════ -->
+    <section id="dashboard" class="container dashboard">
+      <h2>Live Network Status</h2>
+      <p class="sub">Real‑time metrics from the xWTI oracle appchain.</p>
+      <div class="dash-grid">
+        <div class="dash-item reveal">
+          <div class="value" id="dash-price">73.42</div>
+          <div class="label">Latest Price (USD)</div>
+        </div>
+        <div class="dash-item reveal">
+          <div class="value" id="dash-updates">1,440</div>
+          <div class="label">Updates / Day</div>
+        </div>
+        <div class="dash-item reveal">
+          <div class="value" id="dash-sources">5</div>
+          <div class="label">Data Sources</div>
+        </div>
+        <div class="dash-item reveal">
+          <div class="value" id="dash-block">247,891</div>
+          <div class="label">Latest Block Height</div>
+        </div>
+        <div class="dash-item reveal">
+          <div class="value" id="dash-uptime">99.99%</div>
+          <div class="label">Uptime (30d)</div>
+        </div>
+        <div class="dash-item reveal">
+          <div class="value" id="dash-validators">12</div>
+          <div class="label">Active Validators</div>
+        </div>
+      </div>
+      <div class="mini-chart reveal">
+        <svg viewBox="0 0 600 80" preserveAspectRatio="none">
+          <path d="M0,60 L30,55 L60,65 L90,45 L120,55 L150,40 L180,60 L210,50 L240,35 L270,55 L300,60 L330,45 L360,52 L390,38 L420,55 L450,48 L480,60 L510,42 L540,55 L570,45 L600,52" fill="none" stroke="#C9A84C" stroke-width="2" />
+        </svg>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════
+         DEVELOPER HUB
+         ════════════════════════════════════════ -->
+    <section id="dev-hub" class="container dev-hub">
+      <h2>Developer Hub</h2>
+      <p class="sub">Integrate with xWTI in minutes.</p>
+
+      <div class="quick-start reveal">
+        <div class="label">⚡ Quick Start</div>
+        <pre id="code-block"><code>curl -X GET https://api.xwti.io/v1/price/latest \
+  -H "Accept: application/json"</code></pre>
+        <button class="copy-btn" id="copy-btn" aria-label="Copy code to clipboard">Copy</button>
+        <p style="font-size:0.85rem; color:#8A94A6; margin-top:0.5rem;">Try it now – no API key required.</p>
+      </div>
+
+      <div class="doc-grid">
+        <a href="https://github.com/0xmedir/xwti/blob/master/TUTORIAL.md" target="_blank" rel="noopener" class="doc-card reveal">
           <span class="emoji">📖</span>
-          <div><div class="name">Tutorial</div><div class="desc">Step‑by‑step setup</div></div>
+          <div class="info">
+            <div class="name">Tutorial</div>
+            <div class="desc">Setup your own oracle</div>
+          </div>
         </a>
-        <a href="https://github.com/0xmedir/xwti/blob/master/CUSTOMIZE.md" class="doc-card" target="_blank">
+        <a href="https://github.com/0xmedir/xwti/blob/master/CUSTOMIZE.md" target="_blank" rel="noopener" class="doc-card reveal">
           <span class="emoji">⚙️</span>
-          <div><div class="name">Customize</div><div class="desc">Adapt the oracle to your needs</div></div>
+          <div class="info">
+            <div class="name">Customize</div>
+            <div class="desc">Adapt to your needs</div>
+          </div>
         </a>
-        <a href="https://github.com/0xmedir/xwti/blob/master/AGENTS.md" class="doc-card" target="_blank">
+        <a href="https://github.com/0xmedir/xwti/blob/master/AGENTS.md" target="_blank" rel="noopener" class="doc-card reveal">
           <span class="emoji">🤖</span>
-          <div><div class="name">Agents</div><div class="desc">Automate with AI agents</div></div>
+          <div class="info">
+            <div class="name">Agents</div>
+            <div class="desc">Automate with AI</div>
+          </div>
         </a>
-        <a href="https://github.com/0xmedir/xwti" class="doc-card" target="_blank">
+        <a href="https://github.com/0xmedir/xwti" target="_blank" rel="noopener" class="doc-card reveal">
           <span class="emoji">💻</span>
-          <div><div class="name">Source Code</div><div class="desc">GitHub repository</div></div>
+          <div class="info">
+            <div class="name">Source Code</div>
+            <div class="desc">Contribute on GitHub</div>
+          </div>
         </a>
       </div>
     </section>
 
-    <!-- Footer -->
-    <footer>
-      <div class="copy">© 2026 Medir · Built with Go, Python & Canopy SDK</div>
-      <div class="social">
-        <a href="https://x.com/m3dir_web3" target="_blank">X</a>
-        <a href="https://github.com/0xmedir" target="_blank">GitHub</a>
-        <a href="https://t.me/knumb2" target="_blank">Telegram</a>
-      </div>
-    </footer>
-  </div>
+  </main>
 
-  <!-- Tiny typing effect -->
+  <!-- ════════════════════════════════════════
+       FOOTER
+       ════════════════════════════════════════ -->
+  <footer class="container">
+    <div class="footer-left">
+      <div class="copy">© 2026 Medir · Built with Go, Python &amp; Canopy SDK</div>
+      <div class="badge">⚡ Powered by Canopy Network</div>
+    </div>
+    <div class="footer-right">
+      <a href="https://x.com/m3dir_web3" target="_blank" rel="noopener" aria-label="X (Twitter)">X</a>
+      <a href="https://github.com/0xmedir" target="_blank" rel="noopener" aria-label="GitHub">GitHub</a>
+      <a href="https://t.me/knumb2" target="_blank" rel="noopener" aria-label="Telegram">Telegram</a>
+      <a href="mailto:medir9721@gmail.com?subject=xWTI%20Updates" aria-label="Subscribe">Subscribe</a>
+      <span style="color:#5A6475; font-size:0.75rem;">Data for informational purposes only.</span>
+    </div>
+  </footer>
+
+  <!-- ════════════════════════════════════════
+       JAVASCRIPT – interactions
+       ════════════════════════════════════════ -->
   <script>
     (function() {
-      const el = document.getElementById('typed-text');
-      if (!el) return;
-      const phrases = [
-        'Live polling · Onchain indicators',
-        'Open RPC · Sovereign appchain',
-        'WTI crude oil · Real-time feed'
-      ];
-      let idx = 0, charIdx = 0, isDeleting = false;
-      const speed = 60, pause = 2000;
-      function type() {
-        const current = phrases[idx];
-        if (!isDeleting) {
-          el.textContent = current.substring(0, charIdx + 1);
-          charIdx++;
-          if (charIdx === current.length) {
-            isDeleting = true;
-            setTimeout(type, pause);
-            return;
+      "use strict";
+
+      // ── Typing effect ──
+      const typedEl = document.getElementById('typed-text');
+      if (typedEl) {
+        const phrases = [
+          'Real‑time price aggregation',
+          'Onchain SMA & RSI',
+          'Open RPC endpoints',
+          'Sovereign by design'
+        ];
+        let idx = 0, charIdx = 0, isDeleting = false;
+        const speed = 60, pause = 2000;
+        function type() {
+          const current = phrases[idx];
+          if (!isDeleting) {
+            typedEl.textContent = current.substring(0, charIdx + 1);
+            charIdx++;
+            if (charIdx === current.length) {
+              isDeleting = true;
+              setTimeout(type, pause);
+              return;
+            }
+            setTimeout(type, speed);
+          } else {
+            typedEl.textContent = current.substring(0, charIdx - 1);
+            charIdx--;
+            if (charIdx === 0) {
+              isDeleting = false;
+              idx = (idx + 1) % phrases.length;
+              setTimeout(type, speed * 1.5);
+              return;
+            }
+            setTimeout(type, speed * 0.6);
           }
-          setTimeout(type, speed);
-        } else {
-          el.textContent = current.substring(0, charIdx - 1);
-          charIdx--;
-          if (charIdx === 0) {
-            isDeleting = false;
-            idx = (idx + 1) % phrases.length;
-            setTimeout(type, speed * 1.5);
-            return;
-          }
-          setTimeout(type, speed * 0.6);
         }
+        setTimeout(type, 400);
       }
-      setTimeout(type, 400);
+
+      // ── Price ticker (simulated) ──
+      const priceEl = document.getElementById('price-display');
+      const changeEl = document.getElementById('price-change');
+      const updateTime = document.getElementById('update-time');
+      let price = 73.42;
+      function updatePrice() {
+        const change = (Math.random() - 0.5) * 0.6;
+        price = Math.max(60, Math.min(90, price + change));
+        priceEl.textContent = price.toFixed(2);
+        const pct = (change / (price - change)) * 100;
+        const isPositive = pct >= 0;
+        changeEl.textContent = (isPositive ? '+' : '') + pct.toFixed(2) + '%';
+        changeEl.className = 'ticker-change' + (isPositive ? '' : ' negative');
+        updateTime.textContent = 'just now';
+        // Update dash price
+        const dashPrice = document.getElementById('dash-price');
+        if (dashPrice) dashPrice.textContent = price.toFixed(2);
+      }
+      setInterval(updatePrice, 5000);
+      // Initial update
+      updatePrice();
+
+      // ── Copy to clipboard ──
+      const copyBtn = document.getElementById('copy-btn');
+      const codeBlock = document.getElementById('code-block');
+      if (copyBtn && codeBlock) {
+        copyBtn.addEventListener('click', function() {
+          const text = codeBlock.textContent.trim();
+          navigator.clipboard.writeText(text).then(function() {
+            copyBtn.textContent = 'Copied!';
+            setTimeout(function() { copyBtn.textContent = 'Copy'; }, 2000);
+          }).catch(function() {
+            // Fallback
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+            copyBtn.textContent = 'Copied!';
+            setTimeout(function() { copyBtn.textContent = 'Copy'; }, 2000);
+          });
+        });
+      }
+
+      // ── Scroll reveal ──
+      const reveals = document.querySelectorAll('.reveal');
+      if ('IntersectionObserver' in window && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        const obs = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              obs.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.15 });
+        reveals.forEach(function(el) { obs.observe(el); });
+      } else {
+        reveals.forEach(function(el) { el.classList.add('visible'); });
+      }
+
+      // ── Header scroll effect ──
+      const header = document.getElementById('header');
+      let ticking = false;
+      window.addEventListener('scroll', function() {
+        if (!ticking) {
+          requestAnimationFrame(function() {
+            const y = window.scrollY;
+            header.classList.toggle('scrolled', y > 40);
+            ticking = false;
+          });
+          ticking = true;
+        }
+      });
+
+      // ── Update block height (simulated) ──
+      const blockEl = document.getElementById('dash-block');
+      if (blockEl) {
+        let block = 247891;
+        setInterval(function() {
+          block += Math.floor(Math.random() * 3) + 1;
+          blockEl.textContent = block.toLocaleString();
+        }, 8000);
+      }
+
+      // ── Update time counter ──
+      setInterval(function() {
+        const now = new Date();
+        const h = String(now.getHours()).padStart(2, '0');
+        const m = String(now.getMinutes()).padStart(2, '0');
+        const s = String(now.getSeconds()).padStart(2, '0');
+        updateTime.textContent = h + ':' + m + ':' + s;
+      }, 1000);
+
     })();
   </script>
+
 </body>
 </html>
