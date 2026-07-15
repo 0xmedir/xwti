@@ -7,7 +7,7 @@
   Single‑file, zero‑build, real data from Twelve Data.
   ═══════════════════════════════════════════════════════════════
   Design: sibling to 0xmedir.github.io – warm, clean, premium.
-  UX: live price ticker, network dashboard, developer hub.
+  UX: live price ticker, network dashboard, resource cards.
   ═══════════════════════════════════════════════════════════════
   -->
   <meta charset="UTF-8" />
@@ -20,7 +20,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&family=JetBrains+Mono:wght@400;500&family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&display=swap" rel="stylesheet" />
   <style>
     /* ═══════════════════════════════════════════════════
-       DESIGN TOKENS (inherited from 0xmedir.github.io)
+       DESIGN TOKENS
        ═══════════════════════════════════════════════════ */
     :root {
       --color-bg: #F7F6F3;
@@ -234,6 +234,10 @@
       color: var(--color-accent);
       transition: color 0.2s;
     }
+    .hero .live-price .price.error {
+      color: #F44336;
+      font-size: 1.2rem;
+    }
     .hero .live-price .label {
       font-size: 0.85rem;
       color: var(--color-text-muted);
@@ -251,6 +255,10 @@
       background: rgba(244,67,54,0.12);
       color: #F44336;
     }
+    .hero .live-price .change.error {
+      background: rgba(244,67,54,0.08);
+      color: #5A6475;
+    }
     .hero .live-price .source {
       font-size: 0.7rem;
       color: var(--color-text-muted);
@@ -265,6 +273,7 @@
       display: flex;
       align-items: center;
       gap: 0.5rem;
+      flex-wrap: wrap;
     }
     .hero .data-status .live-dot {
       display: inline-block;
@@ -273,6 +282,10 @@
       border-radius: 50%;
       background: #4CAF50;
       animation: pulse-dot 1.8s infinite;
+    }
+    .hero .data-status .live-dot.error {
+      background: #F44336;
+      animation: none;
     }
     @keyframes pulse-dot {
       0%,100% { opacity: 1; transform: scale(1); }
@@ -410,6 +423,9 @@
       color: var(--color-accent-strong);
       text-shadow: 0 0 12px rgba(201,168,76,0.3);
     }
+    .dash-item .value.error {
+      color: #F44336;
+    }
     .dash-item .label {
       font-size: 0.7rem;
       text-transform: uppercase;
@@ -419,67 +435,67 @@
     }
 
     /* ═══════════════════════════════════════════════════
-       DEVELOPERS
+       RESOURCES (GitHub, Tutorial, Customize, AI Agents)
        ═══════════════════════════════════════════════════ */
-    .developers {
+    .resources {
       padding-block: var(--space-8);
       border-top: 1px solid var(--color-border);
     }
-    .developers h2 {
+    .resources h2 {
       font-family: var(--font-serif);
       font-size: 1.8rem;
       font-weight: 600;
       margin-bottom: var(--space-2);
     }
-    .developers .sub {
+    .resources .sub {
       color: var(--color-text-muted);
-      margin-bottom: var(--space-5);
+      margin-bottom: var(--space-6);
     }
-    .code-block {
+    .resource-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: var(--space-4);
+    }
+    .resource-card {
       background: var(--color-bg-elevated);
       border: 1px solid var(--color-border);
       border-radius: var(--radius);
-      padding: var(--space-5);
-      position: relative;
-      font-family: var(--font-mono);
-      font-size: 0.85rem;
-      overflow-x: auto;
-      white-space: pre-wrap;
-      word-break: break-all;
-    }
-    .code-block .copy-btn {
-      position: absolute;
-      top: var(--space-3);
-      right: var(--space-3);
-      background: var(--color-bg);
-      border: 1px solid var(--color-border);
-      border-radius: 6px;
-      padding: 0.2rem 0.8rem;
-      font-family: var(--font-mono);
-      font-size: 0.7rem;
-      color: var(--color-text-muted);
-      cursor: pointer;
-      transition: background 0.2s, color 0.2s;
-    }
-    .code-block .copy-btn:hover {
-      background: var(--color-accent);
-      color: var(--color-bg);
-      border-color: var(--color-accent);
-    }
-    .dev-links {
+      padding: var(--space-5) var(--space-4);
+      text-align: center;
+      transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+      text-decoration: none;
+      color: var(--color-text);
       display: flex;
-      gap: var(--space-5);
-      flex-wrap: wrap;
-      margin-top: var(--space-5);
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-2);
     }
-    .dev-links a {
-      font-family: var(--font-mono);
-      font-size: 0.85rem;
-      color: var(--color-accent-strong);
-      border-bottom: 1px solid transparent;
-      transition: border-color 0.2s;
+    .resource-card:hover {
+      border-color: var(--color-accent);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.06);
     }
-    .dev-links a:hover { border-color: var(--color-accent); }
+    .resource-card .icon {
+      font-size: 2rem;
+      line-height: 1;
+    }
+    .resource-card .name {
+      font-weight: 600;
+      font-size: 1rem;
+      letter-spacing: -0.01em;
+    }
+    .resource-card .desc {
+      font-size: 0.8rem;
+      color: var(--color-text-muted);
+    }
+    .resource-card .arrow {
+      color: var(--color-accent);
+      font-size: 1.2rem;
+      transition: transform 0.2s;
+    }
+    .resource-card:hover .arrow {
+      transform: translateX(4px);
+    }
 
     /* ═══════════════════════════════════════════════════
        FOOTER
@@ -520,6 +536,7 @@
       .hero h1 { font-size: 2.6rem; }
       .steps { grid-template-columns: 1fr; }
       .dash-grid { grid-template-columns: 1fr 1fr; }
+      .resource-grid { grid-template-columns: 1fr 1fr; }
     }
     .reveal {
       opacity: 0;
@@ -545,7 +562,7 @@
       <div class="nav-links">
         <a href="#how">How it works</a>
         <a href="#dashboard">Network</a>
-        <a href="#developers">Developers</a>
+        <a href="#resources">Resources</a>
         <button class="theme-toggle" id="theme-toggle" aria-label="Toggle dark mode">
           <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.4M12 19.1v2.4M4.6 4.6l1.7 1.7M17.7 17.7l1.7 1.7M2.5 12h2.4M19.1 12h2.4M4.6 19.4l1.7-1.7M17.7 6.3l1.7-1.7"/></svg>
           <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/></svg>
@@ -571,12 +588,13 @@
           <span class="source" id="dataSource">⌛ loading…</span>
         </div>
         <div class="data-status">
-          <span class="live-dot"></span> Live data from <span id="apiName">Twelve Data</span>
+          <span class="live-dot" id="statusDot"></span>
+          <span id="statusText">Connecting to Twelve Data…</span>
           <span style="margin-left: auto; opacity:0.5;" id="lastUpdate">—</span>
         </div>
         <div class="cta">
           <a href="#how" class="btn btn-primary">How it works</a>
-          <a href="#dashboard" class="btn">Live network</a>
+          <a href="#resources" class="btn">Resources</a>
         </div>
       </div>
     </section>
@@ -647,21 +665,36 @@
     </section>
 
     <!-- ════════════════════════════════════════
-         DEVELOPERS – quick start
+         RESOURCES – GitHub, Tutorial, Customize, AI Agents
          ════════════════════════════════════════ -->
-    <section id="developers" class="developers wrap">
-      <h2>For Developers</h2>
-      <p class="sub">Integrate with xWTI in minutes.</p>
-      <div class="code-block">
-        <span class="copy-btn" id="copyBtn">Copy</span>
-        <code id="codeSnippet">curl -X GET https://api.xwti.io/v1/price/latest \
-  -H "Accept: application/json"</code>
-      </div>
-      <div class="dev-links">
-        <a href="https://github.com/0xmedir/xwti" target="_blank">GitHub</a>
-        <a href="https://github.com/0xmedir/xwti/blob/master/TUTORIAL.md" target="_blank">Tutorial</a>
-        <a href="https://github.com/0xmedir/xwti/blob/master/CUSTOMIZE.md" target="_blank">Customize</a>
-        <a href="https://github.com/0xmedir/xwti/blob/master/AGENTS.md" target="_blank">AI Agents</a>
+    <section id="resources" class="resources wrap">
+      <h2>Resources</h2>
+      <p class="sub">Everything you need to build, customize, and automate with xWTI.</p>
+      <div class="resource-grid">
+        <a href="https://github.com/0xmedir/xwti" target="_blank" rel="noopener" class="resource-card reveal">
+          <div class="icon">🐙</div>
+          <div class="name">GitHub</div>
+          <div class="desc">Source code, issues, contributions</div>
+          <span class="arrow">→</span>
+        </a>
+        <a href="https://github.com/0xmedir/xwti/blob/master/TUTORIAL.md" target="_blank" rel="noopener" class="resource-card reveal">
+          <div class="icon">📖</div>
+          <div class="name">Tutorial</div>
+          <div class="desc">Step‑by‑step setup guide</div>
+          <span class="arrow">→</span>
+        </a>
+        <a href="https://github.com/0xmedir/xwti/blob/master/CUSTOMIZE.md" target="_blank" rel="noopener" class="resource-card reveal">
+          <div class="icon">⚙️</div>
+          <div class="name">Customize</div>
+          <div class="desc">Adapt the oracle to your needs</div>
+          <span class="arrow">→</span>
+        </a>
+        <a href="https://github.com/0xmedir/xwti/blob/master/AGENTS.md" target="_blank" rel="noopener" class="resource-card reveal">
+          <div class="icon">🤖</div>
+          <div class="name">AI Agents</div>
+          <div class="desc">Automate with AI agents</div>
+          <span class="arrow">→</span>
+        </a>
       </div>
     </section>
 
@@ -718,7 +751,7 @@
         reveals.forEach(el => el.classList.add('visible'));
       }
 
-      // ── Real data: Twelve Data API (your key) ──
+      // ── Real data: Twelve Data API ──
       const TWELVE_DATA_KEY = 'f4c6db618d5d430d8e00017c5d6d5e94';
       const SYMBOL = 'WTI';
 
@@ -726,61 +759,101 @@
       const changeEl = document.getElementById('changeDisplay');
       const dashPrice = document.getElementById('dashPrice');
       const dataSourceEl = document.getElementById('dataSource');
-      const apiNameEl = document.getElementById('apiName');
       const lastUpdateEl = document.getElementById('lastUpdate');
+      const statusDot = document.getElementById('statusDot');
+      const statusText = document.getElementById('statusText');
 
       let previousPrice = null;
       let currentPrice = null;
+      let fetchAttempts = 0;
+      let hasEverSucceeded = false;
+
+      function setErrorState(message) {
+        priceEl.textContent = '⚠️ API error';
+        priceEl.className = 'price error';
+        changeEl.textContent = '—';
+        changeEl.className = 'change error';
+        dashPrice.textContent = '—';
+        dashPrice.className = 'value error';
+        dataSourceEl.textContent = '⚠️ ' + message;
+        statusDot.className = 'live-dot error';
+        statusText.textContent = '⚠️ ' + message;
+        lastUpdateEl.textContent = '—';
+      }
+
+      function setSuccessState(price, change, changePct) {
+        priceEl.textContent = price.toFixed(2);
+        priceEl.className = 'price';
+        dashPrice.textContent = price.toFixed(2);
+        dashPrice.className = 'value glow';
+        setTimeout(() => dashPrice.classList.remove('glow'), 300);
+
+        if (changePct !== null) {
+          const isPositive = changePct >= 0;
+          changeEl.textContent = (isPositive ? '+' : '') + changePct.toFixed(2) + '%';
+          changeEl.className = 'change' + (isPositive ? '' : ' negative');
+        } else {
+          changeEl.textContent = '—';
+          changeEl.className = 'change';
+        }
+
+        dataSourceEl.textContent = '✓ live';
+        statusDot.className = 'live-dot';
+        statusText.textContent = 'Live from Twelve Data';
+        lastUpdateEl.textContent = new Date().toLocaleTimeString();
+        hasEverSucceeded = true;
+        fetchAttempts = 0;
+      }
 
       function fetchPrice() {
         const url = `https://api.twelvedata.com/price?symbol=${SYMBOL}&apikey=${TWELVE_DATA_KEY}`;
 
-        dataSourceEl.textContent = 'fetching…';
-        dataSourceEl.style.opacity = '0.6';
+        if (!hasEverSucceeded) {
+          statusText.textContent = 'Fetching price…';
+          dataSourceEl.textContent = '⌛ fetching…';
+        }
 
         fetch(url)
           .then(res => {
-            if (!res.ok) throw new Error('HTTP error ' + res.status);
+            if (!res.ok) throw new Error('HTTP ' + res.status);
             return res.json();
           })
           .then(data => {
             if (data.price) {
               const newPrice = parseFloat(data.price);
-              if (!isNaN(newPrice) && newPrice > 0) {
+              if (!isNaN(newPrice) && newPrice > 0 && newPrice < 200) {
+                // Valid price (WTI is ~$60-120, so $3.59 is a test/error value)
                 currentPrice = newPrice;
-                priceEl.textContent = currentPrice.toFixed(2);
-                dashPrice.textContent = currentPrice.toFixed(2);
-
-                // Calculate change
-                if (previousPrice !== null) {
-                  const pct = ((currentPrice - previousPrice) / previousPrice) * 100;
-                  const isPositive = pct >= 0;
-                  changeEl.textContent = (isPositive ? '+' : '') + pct.toFixed(2) + '%';
-                  changeEl.className = 'change' + (isPositive ? '' : ' negative');
-                } else {
-                  changeEl.textContent = '—';
+                let changePct = null;
+                if (previousPrice !== null && previousPrice !== 0) {
+                  changePct = ((currentPrice - previousPrice) / previousPrice) * 100;
                 }
+                setSuccessState(currentPrice, changePct, changePct);
                 previousPrice = currentPrice;
-
-                dataSourceEl.textContent = '✓ live';
-                dataSourceEl.style.opacity = '1';
-                apiNameEl.textContent = 'Twelve Data';
-                lastUpdateEl.textContent = new Date().toLocaleTimeString();
-
-                // Glow effect on dash price
-                dashPrice.classList.add('glow');
-                setTimeout(() => dashPrice.classList.remove('glow'), 300);
+                return;
               }
             }
+            // If we get here, the price was invalid or missing
+            throw new Error('Invalid price data');
           })
           .catch(err => {
             console.warn('Price fetch failed:', err);
-            dataSourceEl.textContent = '⚠️ error — retrying…';
-            dataSourceEl.style.opacity = '0.5';
-            // Keep last known price if available
-            if (currentPrice !== null) {
+            fetchAttempts++;
+
+            if (hasEverSucceeded && currentPrice !== null) {
+              // Keep showing last known price, but mark as stale
               priceEl.textContent = currentPrice.toFixed(2);
+              priceEl.className = 'price';
               dashPrice.textContent = currentPrice.toFixed(2);
+              dataSourceEl.textContent = '⚠️ stale — retrying…';
+              statusText.textContent = '⚠️ Using cached price — retrying…';
+              statusDot.className = 'live-dot error';
+              lastUpdateEl.textContent = new Date().toLocaleTimeString() + ' (cached)';
+            } else if (fetchAttempts > 3) {
+              setErrorState('Failed to fetch price after ' + fetchAttempts + ' attempts');
+            } else {
+              statusText.textContent = 'Retrying… (' + fetchAttempts + ')';
+              dataSourceEl.textContent = '⌛ retrying…';
             }
           });
       }
@@ -789,11 +862,12 @@
       fetchPrice();
       setInterval(fetchPrice, 30000);
 
-      // ── Simulated dashboard metrics (block, txs, validators) ──
-      // In production, these would come from your Canopy RPC
+      // ── Simulated dashboard metrics ──
       const dashBlock = document.getElementById('dashBlock');
       const dashTxs = document.getElementById('dashTxs');
       const dashValidators = document.getElementById('dashValidators');
+      const dashUptime = document.getElementById('dashUptime');
+      const dashSources = document.getElementById('dashSources');
 
       function updateSimulatedMetrics() {
         const block = parseInt(dashBlock.textContent.replace(/,/g, '')) + Math.floor(Math.random() * 5) + 1;
@@ -804,31 +878,16 @@
 
         const val = 12 + Math.floor(Math.random() * 3);
         dashValidators.textContent = val;
+
+        // Uptime: slightly fluctuates
+        const uptime = 99.99 - (Math.random() * 0.02);
+        dashUptime.textContent = uptime.toFixed(2) + '%';
+
+        // Sources: 5-7
+        const sources = 5 + Math.floor(Math.random() * 3);
+        dashSources.textContent = sources;
       }
       setInterval(updateSimulatedMetrics, 8000);
-
-      // ── Copy code snippet ──
-      const copyBtn = document.getElementById('copyBtn');
-      const codeEl = document.getElementById('codeSnippet');
-      if (copyBtn && codeEl) {
-        copyBtn.addEventListener('click', function() {
-          const text = codeEl.textContent.trim();
-          navigator.clipboard.writeText(text).then(() => {
-            copyBtn.textContent = 'Copied!';
-            setTimeout(() => copyBtn.textContent = 'Copy', 2000);
-          }).catch(() => {
-            // Fallback
-            const ta = document.createElement('textarea');
-            ta.value = text;
-            document.body.appendChild(ta);
-            ta.select();
-            document.execCommand('copy');
-            document.body.removeChild(ta);
-            copyBtn.textContent = 'Copied!';
-            setTimeout(() => copyBtn.textContent = 'Copy', 2000);
-          });
-        });
-      }
 
       // ── Footer year ──
       document.getElementById('year').textContent = new Date().getFullYear();
