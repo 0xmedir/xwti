@@ -3,131 +3,386 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>xWTI · Oracle for WTI Crude Oil</title>
-  <meta name="description" content="A sovereign oracle appchain for WTI crude oil pricing on Canopy Network." />
+  <title>xWTI · Sovereign Oracle for WTI Crude Oil</title>
+  <meta name="description" content="A sovereign oracle appchain for WTI crude oil pricing on Canopy Network. Live polling, onchain indicators, open RPC." />
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%230B0E14'/><text x='32' y='41' font-family='monospace' font-size='28' fill='%23C9A84C' text-anchor='middle'>x</text></svg>" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet" />
   <style>
-    * { margin:0; padding:0; box-sizing:border-box; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       background: #0B0E14;
       color: #E9EAEE;
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
       line-height: 1.6;
-      padding: 2rem 1.5rem;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
+      -webkit-font-smoothing: antialiased;
     }
-    .container { max-width: 640px; margin: 0 auto; }
-    h1 {
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem;
+    }
+    /* Header */
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0;
+      border-bottom: 1px solid #1A1F2A;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #C9A84C;
+      text-decoration: none;
+    }
+    .logo span { color: #E9EAEE; }
+    nav a {
+      color: #9AA3B5;
+      text-decoration: none;
+      margin-left: 1.5rem;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    nav a:hover { color: #C9A84C; }
+    /* Hero */
+    .hero {
+      padding: 4rem 0 3rem;
+      text-align: center;
+      border-bottom: 1px solid #1A1F2A;
+    }
+    .badge {
+      display: inline-block;
+      background: #1A1F2A;
+      border: 1px solid #2A3040;
+      border-radius: 999px;
+      padding: 0.3rem 1.2rem;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #C9A84C;
+      margin-bottom: 1.5rem;
+    }
+    .badge .dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      background: #4CAF50;
+      border-radius: 50%;
+      margin-right: 0.5rem;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.9); }
+    }
+    .hero h1 {
       font-size: 3.5rem;
       font-weight: 700;
       letter-spacing: -0.02em;
       background: linear-gradient(135deg, #C9A84C, #E8C84A);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
+      background-clip: text;
       margin-bottom: 0.5rem;
     }
-    .tagline { font-size: 1.25rem; color: #9AA3B5; margin-bottom: 2rem; }
-    .badge {
-      display: inline-block;
-      background: #1A1F2A;
-      border: 1px solid #2A3040;
-      border-radius: 999px;
-      padding: 0.4rem 1.2rem;
-      font-size: 0.8rem;
-      font-weight: 600;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      color: #C9A84C;
+    .hero .sub {
+      font-size: 1.3rem;
+      color: #9AA3B5;
       margin-bottom: 1.5rem;
+      font-weight: 400;
     }
+    .hero .typing {
+      font-family: 'Inter', monospace;
+      font-size: 1.1rem;
+      color: #8A94A6;
+      margin-bottom: 2rem;
+      min-height: 2.4em;
+    }
+    .hero .typing .cursor {
+      display: inline-block;
+      width: 2px;
+      height: 1.1em;
+      background: #C9A84C;
+      margin-left: 4px;
+      animation: blink 1s step-end infinite;
+    }
+    @keyframes blink { 0%,100% { opacity: 1; } 50% { opacity: 0; } }
+    .btn-group {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    .btn {
+      display: inline-block;
+      padding: 0.7rem 2rem;
+      border-radius: 999px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.2s;
+      font-size: 1rem;
+    }
+    .btn-primary {
+      background: #C9A84C;
+      color: #0B0E14;
+    }
+    .btn-primary:hover {
+      background: #E8C84A;
+      transform: translateY(-2px);
+    }
+    .btn-outline {
+      border: 1px solid #C9A84C;
+      color: #C9A84C;
+      background: transparent;
+    }
+    .btn-outline:hover {
+      background: #C9A84C;
+      color: #0B0E14;
+      transform: translateY(-2px);
+    }
+    /* Features */
     .features {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.5rem;
-      margin: 2.5rem 0;
-      text-align: left;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 2rem;
+      padding: 3rem 0;
+      border-bottom: 1px solid #1A1F2A;
     }
     .feature {
       background: #13171F;
-      border: 1px solid #242934;
+      border: 1px solid #1A1F2A;
       border-radius: 12px;
-      padding: 1.2rem 1.5rem;
-      transition: border-color 0.2s;
+      padding: 1.5rem;
+      transition: border-color 0.2s, transform 0.2s;
     }
-    .feature:hover { border-color: #C9A84C; }
-    .feature h3 { font-size: 1rem; color: #E9EAEE; margin-bottom: 0.3rem; }
-    .feature p { font-size: 0.9rem; color: #8A94A6; }
-    .btn {
-      display: inline-block;
-      background: #C9A84C;
-      color: #0B0E14;
-      font-weight: 600;
-      padding: 0.8rem 2.4rem;
-      border-radius: 999px;
-      text-decoration: none;
-      font-size: 1rem;
-      transition: background 0.2s, transform 0.1s;
-      margin: 0.5rem;
+    .feature:hover {
+      border-color: #C9A84C;
+      transform: translateY(-4px);
     }
-    .btn:hover { background: #E8C84A; transform: translateY(-2px); }
-    .btn-outline {
-      background: transparent;
+    .feature .icon {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+    }
+    .feature h3 {
+      font-size: 1.1rem;
+      margin-bottom: 0.3rem;
+      color: #E9EAEE;
+    }
+    .feature p {
+      font-size: 0.95rem;
+      color: #8A94A6;
+      line-height: 1.5;
+    }
+    /* Live status */
+    .live-status {
+      background: #13171F;
+      border: 1px solid #1A1F2A;
+      border-radius: 12px;
+      padding: 2rem;
+      margin: 2rem 0;
+      text-align: center;
+    }
+    .live-status .price {
+      font-size: 2.5rem;
+      font-weight: 700;
       color: #C9A84C;
-      border: 1px solid #C9A84C;
     }
-    .btn-outline:hover { background: #C9A84C; color: #0B0E14; }
-    .footer {
-      margin-top: 3rem;
+    .live-status .label {
+      font-size: 0.9rem;
+      color: #8A94A6;
+      margin-top: 0.3rem;
+    }
+    /* Docs quick links */
+    .docs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      padding: 2rem 0;
+    }
+    .doc-card {
+      background: #13171F;
+      border: 1px solid #1A1F2A;
+      border-radius: 8px;
+      padding: 1rem 1.2rem;
+      text-decoration: none;
+      color: #E9EAEE;
+      transition: border-color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .doc-card:hover {
+      border-color: #C9A84C;
+    }
+    .doc-card .emoji { font-size: 1.3rem; }
+    .doc-card .name { font-weight: 500; }
+    .doc-card .desc { font-size: 0.8rem; color: #8A94A6; margin-top: 0.2rem; }
+    /* Footer */
+    footer {
+      border-top: 1px solid #1A1F2A;
+      padding: 2rem 0 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    footer .social a {
+      color: #8A94A6;
+      margin-left: 1.2rem;
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+    footer .social a:hover { color: #C9A84C; }
+    footer .copy {
       font-size: 0.8rem;
       color: #5A6475;
     }
-    .footer a { color: #C9A84C; text-decoration: none; }
-    @media (max-width: 500px) {
-      h1 { font-size: 2.5rem; }
-      .features { grid-template-columns: 1fr; }
+    @media (max-width: 600px) {
+      .hero h1 { font-size: 2.5rem; }
+      .hero .sub { font-size: 1rem; }
+      .btn-group .btn { width: 100%; text-align: center; }
+      nav a { margin-left: 1rem; }
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <div class="badge">⚡ Canopy Network ⚡</div>
-    <h1>xWTI</h1>
-    <p class="tagline">A sovereign oracle appchain for WTI crude oil pricing</p>
-    <div style="margin: 1rem 0;">
-      <a href="https://github.com/0xmedir/xwti" class="btn">View on GitHub</a>
-      <a href="#status" class="btn btn-outline">Live Status</a>
-    </div>
-    <div class="features">
+    <!-- Header -->
+    <header>
+      <a href="#" class="logo">x<span>WTI</span></a>
+      <nav>
+        <a href="#features">Features</a>
+        <a href="#docs">Docs</a>
+        <a href="https://github.com/0xmedir/xwti" target="_blank">GitHub</a>
+      </nav>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+      <div class="badge"><span class="dot"></span> Testnet Live</div>
+      <h1>xWTI</h1>
+      <p class="sub">Sovereign oracle appchain for WTI crude oil</p>
+      <div class="typing">
+        <span id="typed-text">Live polling · Onchain indicators</span><span class="cursor"></span>
+      </div>
+      <div class="btn-group">
+        <a href="#docs" class="btn btn-primary">Get Started</a>
+        <a href="https://github.com/0xmedir/xwti" target="_blank" class="btn btn-outline">View on GitHub</a>
+      </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="features">
       <div class="feature">
-        <h3>📊 Live Polling</h3>
+        <div class="icon">📊</div>
+        <h3>Live Polling</h3>
         <p>Real‑time WTI prices from multiple sources, updated every minute.</p>
       </div>
       <div class="feature">
-        <h3>🔗 Onchain Indicators</h3>
-        <p>Technical indicators (SMA, RSI, etc.) submitted directly to the blockchain.</p>
+        <div class="icon">🔗</div>
+        <h3>Onchain Indicators</h3>
+        <p>SMA, RSI, and other technical indicators submitted directly to the blockchain.</p>
       </div>
       <div class="feature">
-        <h3>🧩 Open RPC</h3>
+        <div class="icon">🧩</div>
+        <h3>Open RPC</h3>
         <p>Anyone can query the raw feed via public RPC endpoints.</p>
       </div>
       <div class="feature">
-        <h3>⚙️ Sovereign Appchain</h3>
+        <div class="icon">⚙️</div>
+        <h3>Sovereign Appchain</h3>
         <p>Built with Canopy SDK – your own chain, your own rules.</p>
       </div>
+    </section>
+
+    <!-- Live Status (placeholder) -->
+    <div class="live-status" id="status">
+      <div class="price">$73.42</div>
+      <div class="label">Latest WTI price (simulated)</div>
+      <div style="font-size:0.8rem; color:#5A6475; margin-top:0.5rem;">Updated every 60s · Coming soon: real feed</div>
     </div>
-    <div style="margin: 2rem 0;">
-      <p style="color:#8A94A6; font-size:0.95rem;">
-        <strong>Status:</strong> Testnet live · Mainnet coming soon
-      </p>
-    </div>
-    <div class="footer">
-      Built with Go · Python · Canopy SDK &nbsp;|&nbsp; <a href="https://github.com/0xmedir/xwti">Contribute</a>
-    </div>
+
+    <!-- Documentation Quick Links -->
+    <section id="docs">
+      <h2 style="font-size:1.5rem; font-weight:600; margin-bottom:1rem; color:#E9EAEE;">Documentation</h2>
+      <div class="docs-grid">
+        <a href="https://github.com/0xmedir/xwti/blob/master/TUTORIAL.md" class="doc-card" target="_blank">
+          <span class="emoji">📖</span>
+          <div><div class="name">Tutorial</div><div class="desc">Step‑by‑step setup</div></div>
+        </a>
+        <a href="https://github.com/0xmedir/xwti/blob/master/CUSTOMIZE.md" class="doc-card" target="_blank">
+          <span class="emoji">⚙️</span>
+          <div><div class="name">Customize</div><div class="desc">Adapt the oracle to your needs</div></div>
+        </a>
+        <a href="https://github.com/0xmedir/xwti/blob/master/AGENTS.md" class="doc-card" target="_blank">
+          <span class="emoji">🤖</span>
+          <div><div class="name">Agents</div><div class="desc">Automate with AI agents</div></div>
+        </a>
+        <a href="https://github.com/0xmedir/xwti" class="doc-card" target="_blank">
+          <span class="emoji">💻</span>
+          <div><div class="name">Source Code</div><div class="desc">GitHub repository</div></div>
+        </a>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+      <div class="copy">© 2026 Medir · Built with Go, Python & Canopy SDK</div>
+      <div class="social">
+        <a href="https://x.com/m3dir_web3" target="_blank">X</a>
+        <a href="https://github.com/0xmedir" target="_blank">GitHub</a>
+        <a href="https://t.me/knumb2" target="_blank">Telegram</a>
+      </div>
+    </footer>
   </div>
+
+  <!-- Tiny typing effect -->
+  <script>
+    (function() {
+      const el = document.getElementById('typed-text');
+      if (!el) return;
+      const phrases = [
+        'Live polling · Onchain indicators',
+        'Open RPC · Sovereign appchain',
+        'WTI crude oil · Real-time feed'
+      ];
+      let idx = 0, charIdx = 0, isDeleting = false;
+      const speed = 60, pause = 2000;
+      function type() {
+        const current = phrases[idx];
+        if (!isDeleting) {
+          el.textContent = current.substring(0, charIdx + 1);
+          charIdx++;
+          if (charIdx === current.length) {
+            isDeleting = true;
+            setTimeout(type, pause);
+            return;
+          }
+          setTimeout(type, speed);
+        } else {
+          el.textContent = current.substring(0, charIdx - 1);
+          charIdx--;
+          if (charIdx === 0) {
+            isDeleting = false;
+            idx = (idx + 1) % phrases.length;
+            setTimeout(type, speed * 1.5);
+            return;
+          }
+          setTimeout(type, speed * 0.6);
+        }
+      }
+      setTimeout(type, 400);
+    })();
+  </script>
 </body>
 </html>
