@@ -6,8 +6,7 @@
   xWTI – Sovereign Oracle for WTI Crude Oil
   Single‑file, zero‑build, real data from Twelve Data.
   ═══════════════════════════════════════════════════════════════
-  Design: sibling to 0xmedir.github.io – warm, clean, premium.
-  UX: live price ticker, network dashboard, resource cards.
+  API Key: 2d2a17bd771c4fc5b75c9ec1aaec7aea (new)
   ═══════════════════════════════════════════════════════════════
   -->
   <meta charset="UTF-8" />
@@ -238,6 +237,15 @@
       color: #F44336;
       font-size: 1.2rem;
     }
+    .hero .live-price .price.loading {
+      color: var(--color-text-muted);
+      font-size: 1.8rem;
+      animation: pulse-text 1.2s infinite;
+    }
+    @keyframes pulse-text {
+      0%,100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
     .hero .live-price .label {
       font-size: 0.85rem;
       color: var(--color-text-muted);
@@ -257,6 +265,10 @@
     }
     .hero .live-price .change.error {
       background: rgba(244,67,54,0.08);
+      color: #5A6475;
+    }
+    .hero .live-price .change.loading {
+      background: rgba(90,100,117,0.08);
       color: #5A6475;
     }
     .hero .live-price .source {
@@ -286,6 +298,10 @@
     .hero .data-status .live-dot.error {
       background: #F44336;
       animation: none;
+    }
+    .hero .data-status .live-dot.loading {
+      background: #FFA726;
+      animation: pulse-dot 0.8s infinite;
     }
     @keyframes pulse-dot {
       0%,100% { opacity: 1; transform: scale(1); }
@@ -435,7 +451,7 @@
     }
 
     /* ═══════════════════════════════════════════════════
-       RESOURCES (GitHub, Tutorial, Customize, AI Agents)
+       RESOURCES
        ═══════════════════════════════════════════════════ */
     .resources {
       padding-block: var(--space-8);
@@ -582,13 +598,13 @@
         <h1 id="hero-title">xWTI</h1>
         <p class="tagline">A sovereign oracle for WTI crude oil — built on Canopy Network. Transparent, reliable, and yours.</p>
         <div class="live-price">
-          <span class="price" id="priceDisplay">—</span>
+          <span class="price loading" id="priceDisplay">—</span>
           <span class="label">USD · WTI</span>
-          <span class="change" id="changeDisplay">—</span>
+          <span class="change loading" id="changeDisplay">—</span>
           <span class="source" id="dataSource">⌛ loading…</span>
         </div>
         <div class="data-status">
-          <span class="live-dot" id="statusDot"></span>
+          <span class="live-dot loading" id="statusDot"></span>
           <span id="statusText">Connecting to Twelve Data…</span>
           <span style="margin-left: auto; opacity:0.5;" id="lastUpdate">—</span>
         </div>
@@ -600,7 +616,7 @@
     </section>
 
     <!-- ════════════════════════════════════════
-         HOW IT WORKS – Canopy integration
+         HOW IT WORKS
          ════════════════════════════════════════ -->
     <section id="how" class="how-it-works wrap">
       <h2>How it works</h2>
@@ -621,7 +637,7 @@
         <div class="step reveal">
           <div class="num">03</div>
           <h3>Real‑time feed</h3>
-          <p>This site fetches live WTI prices from Twelve Data. In production, you point it to your Canopy node’s RPC.</p>
+          <p>This site fetches live WTI prices from Twelve Data. In production, you point it to your Canopy node's RPC.</p>
         </div>
       </div>
       <div style="margin-top: var(--space-6); padding: var(--space-4); background: var(--color-bg-elevated); border-radius: var(--radius); border: 1px solid var(--color-border); font-size: 0.9rem; color: var(--color-text-muted);">
@@ -631,7 +647,7 @@
     </section>
 
     <!-- ════════════════════════════════════════
-         DASHBOARD – live network metrics
+         DASHBOARD
          ════════════════════════════════════════ -->
     <section id="dashboard" class="dashboard wrap">
       <h2>Live Network</h2>
@@ -665,7 +681,7 @@
     </section>
 
     <!-- ════════════════════════════════════════
-         RESOURCES – GitHub, Tutorial, Customize, AI Agents
+         RESOURCES
          ════════════════════════════════════════ -->
     <section id="resources" class="resources wrap">
       <h2>Resources</h2>
@@ -751,8 +767,8 @@
         reveals.forEach(el => el.classList.add('visible'));
       }
 
-      // ── Real data: Twelve Data API ──
-      const TWELVE_DATA_KEY = 'f4c6db618d5d430d8e00017c5d6d5e94';
+      // ── Real data: Twelve Data API (NEW KEY) ──
+      const TWELVE_DATA_KEY = '2d2a17bd771c4fc5b75c9ec1aaec7aea';
       const SYMBOL = 'WTI';
 
       const priceEl = document.getElementById('priceDisplay');
@@ -767,6 +783,17 @@
       let currentPrice = null;
       let fetchAttempts = 0;
       let hasEverSucceeded = false;
+      let isFetching = false;
+
+      function setLoadingState() {
+        priceEl.textContent = '—';
+        priceEl.className = 'price loading';
+        changeEl.textContent = '—';
+        changeEl.className = 'change loading';
+        dashPrice.textContent = '—';
+        dashPrice.className = 'value';
+        statusDot.className = 'live-dot loading';
+      }
 
       function setErrorState(message) {
         priceEl.textContent = '⚠️ API error';
@@ -781,14 +808,14 @@
         lastUpdateEl.textContent = '—';
       }
 
-      function setSuccessState(price, change, changePct) {
+      function setSuccessState(price, changePct) {
         priceEl.textContent = price.toFixed(2);
         priceEl.className = 'price';
         dashPrice.textContent = price.toFixed(2);
         dashPrice.className = 'value glow';
         setTimeout(() => dashPrice.classList.remove('glow'), 300);
 
-        if (changePct !== null) {
+        if (changePct !== null && !isNaN(changePct)) {
           const isPositive = changePct >= 0;
           changeEl.textContent = (isPositive ? '+' : '') + changePct.toFixed(2) + '%';
           changeEl.className = 'change' + (isPositive ? '' : ' negative');
@@ -806,39 +833,53 @@
       }
 
       function fetchPrice() {
-        const url = `https://api.twelvedata.com/price?symbol=${SYMBOL}&apikey=${TWELVE_DATA_KEY}`;
+        if (isFetching) return;
+        isFetching = true;
 
+        // Show loading state if we don't have a cached price
         if (!hasEverSucceeded) {
+          setLoadingState();
           statusText.textContent = 'Fetching price…';
           dataSourceEl.textContent = '⌛ fetching…';
         }
 
+        const url = `https://api.twelvedata.com/price?symbol=${SYMBOL}&apikey=${TWELVE_DATA_KEY}`;
+
         fetch(url)
           .then(res => {
-            if (!res.ok) throw new Error('HTTP ' + res.status);
+            if (!res.ok) throw new Error('HTTP ' + res.status + ' - ' + res.statusText);
             return res.json();
           })
           .then(data => {
+            // Twelve Data returns { price: "73.42", ... } or an error object
             if (data.price) {
               const newPrice = parseFloat(data.price);
-              if (!isNaN(newPrice) && newPrice > 0 && newPrice < 200) {
-                // Valid price (WTI is ~$60-120, so $3.59 is a test/error value)
+              // WTI crude oil is typically $60-90. Reject anything outside $20-150 as invalid.
+              if (!isNaN(newPrice) && newPrice > 20 && newPrice < 150) {
                 currentPrice = newPrice;
                 let changePct = null;
                 if (previousPrice !== null && previousPrice !== 0) {
                   changePct = ((currentPrice - previousPrice) / previousPrice) * 100;
                 }
-                setSuccessState(currentPrice, changePct, changePct);
+                setSuccessState(currentPrice, changePct);
                 previousPrice = currentPrice;
+                isFetching = false;
                 return;
+              } else {
+                // Price is outside expected range – likely a test/simulated value
+                console.warn('Price outside expected range:', newPrice);
+                throw new Error('Invalid price value: ' + newPrice);
               }
+            } else if (data.status === 'error') {
+              throw new Error(data.message || 'API error');
+            } else {
+              throw new Error('Unexpected API response');
             }
-            // If we get here, the price was invalid or missing
-            throw new Error('Invalid price data');
           })
           .catch(err => {
-            console.warn('Price fetch failed:', err);
+            console.warn('Price fetch failed:', err.message);
             fetchAttempts++;
+            isFetching = false;
 
             if (hasEverSucceeded && currentPrice !== null) {
               // Keep showing last known price, but mark as stale
@@ -854,11 +895,12 @@
             } else {
               statusText.textContent = 'Retrying… (' + fetchAttempts + ')';
               dataSourceEl.textContent = '⌛ retrying…';
+              statusDot.className = 'live-dot loading';
             }
           });
       }
 
-      // Fetch immediately, then every 30 seconds
+      // ── Fetch immediately, then every 30 seconds ──
       fetchPrice();
       setInterval(fetchPrice, 30000);
 
@@ -879,11 +921,9 @@
         const val = 12 + Math.floor(Math.random() * 3);
         dashValidators.textContent = val;
 
-        // Uptime: slightly fluctuates
         const uptime = 99.99 - (Math.random() * 0.02);
         dashUptime.textContent = uptime.toFixed(2) + '%';
 
-        // Sources: 5-7
         const sources = 5 + Math.floor(Math.random() * 3);
         dashSources.textContent = sources;
       }
